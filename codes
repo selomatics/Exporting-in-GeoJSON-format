@@ -1,17 +1,15 @@
-# QGIS Python Konsolunda çalıştırılabilir
+from qgis.core import QgsProject, QgsVectorFileWriter
 
-from qgis.core import QgsProject
+# 1️⃣ Aktif katmanı seç
+katman = QgsProject.instance().mapLayersByName("Bina_Katmanı")[0]  # Katman adını buradan değiştirebilirsiniz
 
-# 1️⃣ Aktif katmanı al
-layer = QgsProject.instance().mapLayersByName("Bina_Katmanı")[0]  # Katman adını değiştir
+if katman:
+    # 2️⃣ Dışa aktarılacak dosyanın yolunu belirle
+    dosya_yolu = "/home/kullanici/itu_bina.geojson"  # Dosya yolu kendi dizininize göre güncellenmeli
 
-if layer:
-    # 2️⃣ Çıktı dosya yolunu belirle
-    output_path = "/home/kullanici/itu_bina.geojson"  # Burayı kendi dizinine göre değiştir
+    # 3️⃣ Katmanı GeoJSON formatında kaydet
+    QgsVectorFileWriter.writeAsVectorFormat(katman, dosya_yolu, "UTF-8", katman.crs(), "GeoJSON")
 
-    # 3️⃣ Katmanı GeoJSON olarak dışa aktar
-    QgsVectorFileWriter.writeAsVectorFormat(layer, output_path, "UTF-8", layer.crs(), "GeoJSON")
-
-    print(f"✅ Katman başarıyla {output_path} olarak kaydedildi!")
+    print(f"✅ Katman başarıyla {dosya_yolu} olarak kaydedildi.")
 else:
-    print("⚠️ Lütfen önce bir katman seçin!")
+    print("⚠️ Lütfen geçerli bir katman seçin.")
